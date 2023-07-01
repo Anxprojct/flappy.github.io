@@ -3,54 +3,7 @@
 <head>
     <title>Flappy Bird</title>
     <style>
-        #game-container {
-            position: relative;
-            width: 400px;
-            height: 600px;
-            border: 1px solid black;
-            margin: 0 auto;
-            overflow: hidden;
-        }
-
-        #bird {
-            position: absolute;
-            left: 50px;
-            top: 200px;
-            width: 34px;
-            height: 24px;
-            background-color: yellow;
-        }
-
-        .pipe {
-            position: absolute;
-            width: 52px;
-            height: 320px;
-            background-color: green;
-        }
-
-        #score {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 24px;
-        }
-
-        body {
-            background-color: black;
-            animation: cmatrix 1s infinite;
-        }
-
-        @keyframes cmatrix {
-            0% {
-                background-color: black;
-            }
-            50% {
-                background-color: lime;
-            }
-            100% {
-                background-color: black;
-            }
-        }
+        /* CSS Styles */
     </style>
 </head>
 <body>
@@ -70,51 +23,35 @@
         var gameSpeed = 2.5;
         var gameLoop;
         var pipeInterval;
+        var isJumping = false;
 
         function createPipe() {
-            var pipe = document.createElement("div");
-            pipe.classList.add("pipe");
-            pipe.style.left = gameContainer.offsetWidth + "px";
-            pipe.style.top = Math.random() * (gameContainer.offsetHeight - 400) + "px";
-            gameContainer.appendChild(pipe);
-            pipes.push(pipe);
+            // ...
         }
 
         function updatePipes() {
-            for (var i = 0; i < pipes.length; i++) {
-                var pipe = pipes[i];
-                var pipeRect = pipe.getBoundingClientRect();
-                var birdRect = bird.getBoundingClientRect();
-
-                if (
-                    birdRect.right > pipeRect.left &&
-                    birdRect.left < pipeRect.right &&
-                    birdRect.bottom > pipeRect.top &&
-                    birdRect.top < pipeRect.bottom
-                ) {
-                    gameOver();
-                }
-
-                if (pipeRect.right < 0) {
-                    pipe.remove();
-                    pipes.splice(i, 1);
-                    score++;
-                    scoreLabel.innerText = "Score: " + score;
-                }
-
-                pipe.style.left = pipeRect.left - gameSpeed + "px";
-            }
+            // ...
         }
 
         function jump() {
-            bird.style.top = bird.offsetTop - jumpStrength + "px";
+            if (!isJumping) {
+                isJumping = true;
+                var jumpInterval = setInterval(function () {
+                    var birdRect = bird.getBoundingClientRect();
+                    if (birdRect.top <= 0 || isJumping === false) {
+                        clearInterval(jumpInterval);
+                        isJumping = false;
+                    } else {
+                        bird.style.top = bird.offsetTop - jumpStrength + "px";
+                    }
+                }, 20);
+            }
         }
 
         function gameOver() {
             clearInterval(gameLoop);
             clearInterval(pipeInterval);
-            document.removeEventListener("keydown", handleKeyDown);
-            alert("Jiah kalah, masa gitu aja gabisa. Your score is: " + score);
+            alert("Jiah, kalah! Masa gitu aja gabisa?");
             restartGame();
         }
 
@@ -122,7 +59,7 @@
             bird.style.top = "200px";
             score = 0;
             scoreLabel.innerText = "Score: " + score;
-            pipes.forEach(function(pipe) {
+            pipes.forEach(function (pipe) {
                 pipe.remove();
             });
             pipes = [];
@@ -130,11 +67,12 @@
         }
 
         function startGame() {
+            bird.style.top = "200px";
             gameLoop = setInterval(function () {
                 var birdRect = bird.getBoundingClientRect();
                 var gameContainerRect = gameContainer.getBoundingClientRect();
 
-                if (birdRect.bottom >= gameContainerRect.bottom || birdRect.top <= 0) {
+                if (birdRect.bottom >= gameContainerRect.bottom) {
                     gameOver();
                 }
 
