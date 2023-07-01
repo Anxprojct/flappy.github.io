@@ -3,7 +3,6 @@
 <head>
     <title>Flappy Bird</title>
     <style>
-        /* CSS styling */
         #game-container {
             position: relative;
             width: 400px;
@@ -45,7 +44,6 @@
     <div id="score">Score: 0</div>
 
     <script>
-        // JavaScript code
         var bird = document.getElementById("bird");
         var gameContainer = document.getElementById("game-container");
         var scoreLabel = document.getElementById("score");
@@ -70,12 +68,7 @@
                 var pipeRect = pipe.getBoundingClientRect();
                 var birdRect = bird.getBoundingClientRect();
 
-                if (
-                    birdRect.right > pipeRect.left &&
-                    birdRect.left < pipeRect.right &&
-                    birdRect.bottom > pipeRect.top &&
-                    birdRect.top < pipeRect.bottom
-                ) {
+                if (birdRect.right > pipeRect.left && birdRect.left < pipeRect.right && birdRect.bottom > pipeRect.top && birdRect.top < pipeRect.bottom) {
                     gameOver();
                 }
 
@@ -96,7 +89,9 @@
 
         function gameOver() {
             clearInterval(gameLoop);
+            clearInterval(scoreIncreaseLoop);
             alert("Game Over. Your score is: " + score);
+            alert("Jiah, kalah! Masa gitu aja gabisa...");
         }
 
         document.addEventListener("keydown", function(event) {
@@ -109,10 +104,7 @@
             var birdRect = bird.getBoundingClientRect();
             var gameContainerRect = gameContainer.getBoundingClientRect();
 
-            if (
-                birdRect.bottom >= gameContainerRect.bottom ||
-                birdRect.top <= gameContainerRect.top
-            ) {
+            if (birdRect.bottom >= gameContainerRect.bottom || birdRect.top <= gameContainerRect.top) {
                 gameOver();
             }
 
@@ -121,6 +113,11 @@
         }, 20);
 
         setInterval(createPipe, 2000);
+
+        var scoreIncreaseLoop = setInterval(function() {
+            score++;
+            scoreLabel.innerText = "Score: " + score;
+        }, 1000);
     </script>
 </body>
 </html>
