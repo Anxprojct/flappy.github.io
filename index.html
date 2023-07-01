@@ -3,23 +3,11 @@
 <head>
     <title>Flappy Bird</title>
     <style>
-        body {
-            overflow: hidden;
-            animation: cmatrix 1s infinite;
-        }
-
-        @keyframes cmatrix {
-            0% { background-color: #000; }
-            25% { background-color: #0F0; }
-            50% { background-color: #00F; }
-            75% { background-color: #F00; }
-            100% { background-color: #000; }
-        }
-
         #game-container {
             position: relative;
             width: 400px;
             height: 600px;
+            border: 1px solid black;
             margin: 0 auto;
             overflow: hidden;
         }
@@ -31,7 +19,7 @@
             width: 50px;
             height: 50px;
             background-color: yellow;
-            transition: transform 0.2s ease-out;
+            transition: top 0.2s linear;
         }
 
         .pipe {
@@ -46,16 +34,32 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            color: white;
             font-size: 24px;
+        }
+
+        body {
+            background-color: black;
+            animation: cmatrix 1s infinite;
+        }
+
+        @keyframes cmatrix {
+            0% {
+                background-color: black;
+            }
+            50% {
+                background-color: lime;
+            }
+            100% {
+                background-color: black;
+            }
         }
     </style>
 </head>
 <body>
     <div id="game-container">
         <div id="bird"></div>
-        <div id="score">Score: 0</div>
     </div>
+    <div id="score">Score: 0</div>
 
     <script>
         var bird = document.getElementById("bird");
@@ -67,6 +71,7 @@
         var jumpStrength = 25;
         var gameSpeed = 5;
         var gameLoop;
+        var pipeInterval;
 
         function createPipe() {
             var pipe = document.createElement("div");
@@ -104,56 +109,48 @@
         }
 
         function jump() {
-            bird.style.transform = "translateY(" + (-jumpStrength) + "px)";
+            bird.style.top = bird.offsetTop - jumpStrength + "px";
         }
 
         function gameOver() {
             clearInterval(gameLoop);
-            document.removeEventListener("keydown", handleKeyPress);
-            document.addEventListener("keydown", restartGame);
-            alert("Jiah kalah, masa gitu aja gabisa! Your score is: " + score + "\nPress Space to restart the game.");
+            clearInterval(pipeInterval);
+            alert("Jiah kalah, masa gitu aja gabisa. Your score is: " + score);
+            restartGame();
         }
 
-        function restartGame(event) {
-            if (event.code === "Space") {
-                pipes.forEach(function (pipe) {
-                    pipe.remove();
-                });
-                pipes = [];
-                bird.style.transform = "translateY(0)";
-                bird.style.top = "200px";
-                score = 0;
-                scoreLabel.innerText = "Score: " + score;
-                document.removeEventListener("keydown", restartGame);
-                startGame();
-            }
+        function restartGame() {
+            bird.style.top = "200px";
+            score = 0;
+            scoreLabel.innerText = "Score: " + score;
+            pipes.forEach(function (pipe) {
+                pipe.remove();
+            });
+            pipes = [];
+            startGame();
         }
 
         function startGame() {
-            document.addEventListener("keydown", handleKeyPress);
-            gameLoop = setInterval(function() {
+            gameLoop = setInterval(function () {
                 var birdRect = bird.getBoundingClientRect();
                 var gameContainerRect = gameContainer.getBoundingClientRect();
 
-                if (
-                    birdRect.bottom >= gameContainerRect.bottom ||
-                    birdRect.top <= 0
-                ) {
+                if (birdRect.bottom >= gameContainerRect.bottom || birdRect.top <= 0) {
                     gameOver();
                 }
 
-                bird.style.transform = "translateY(" + gravity + "px)";
+                bird.style.top = bird.offsetTop + gravity + "px";
                 updatePipes();
             }, 20);
 
-            setInterval(createPipe, 3000);
+            pipeInterval = setInterval(createPipe, 3000);
         }
 
-        function handleKeyPress(event) {
+        document.addEventListener("keydown", function (event) {
             if (event.code === "Space") {
                 jump();
             }
-        }
+        });
 
         startGame();
     </script>
