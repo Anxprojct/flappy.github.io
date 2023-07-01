@@ -24,13 +24,36 @@
         var gameLoop;
         var pipeInterval;
         var isJumping = false;
+        var birdColors = ["red", "blue", "green", "yellow"];
 
         function createPipe() {
-            // ...
+            var pipe = document.createElement("div");
+            pipe.classList.add("pipe");
+            pipe.style.left = gameContainer.offsetWidth + "px";
+            pipe.style.top = Math.random() * (gameContainer.offsetHeight - 200) + "px";
+            gameContainer.appendChild(pipe);
+            pipes.push(pipe);
         }
 
         function updatePipes() {
-            // ...
+            for (var i = 0; i < pipes.length; i++) {
+                var pipe = pipes[i];
+                var pipeRect = pipe.getBoundingClientRect();
+                var birdRect = bird.getBoundingClientRect();
+
+                if (birdRect.right > pipeRect.left && birdRect.left < pipeRect.right && birdRect.bottom > pipeRect.top && birdRect.top < pipeRect.bottom) {
+                    gameOver();
+                }
+
+                if (pipeRect.right < 0) {
+                    pipe.remove();
+                    pipes.splice(i, 1);
+                    score++;
+                    scoreLabel.innerText = "Score: " + score;
+                }
+
+                pipe.style.left = pipeRect.left - gameSpeed + "px";
+            }
         }
 
         function jump() {
@@ -89,7 +112,13 @@
             }
         }
 
+        function changeBirdColor() {
+            var randomColor = birdColors[Math.floor(Math.random() * birdColors.length)];
+            bird.style.backgroundColor = randomColor;
+        }
+
         document.addEventListener("keydown", handleKeyDown);
+        setInterval(changeBirdColor, 1000);
         startGame();
     </script>
 </body>
