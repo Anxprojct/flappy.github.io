@@ -16,18 +16,16 @@
             position: absolute;
             left: 50px;
             top: 200px;
-            width: 50px;
-            height: 50px;
+            width: 34px;
+            height: 24px;
             background-color: yellow;
-            transition: top 0.2s linear;
         }
 
         .pipe {
             position: absolute;
-            width: 80px;
-            height: 400px;
+            width: 52px;
+            height: 320px;
             background-color: green;
-            transition: left 2s linear;
         }
 
         #score {
@@ -68,8 +66,8 @@
         var pipes = [];
         var score = 0;
         var gravity = 1.5;
-        var jumpStrength = 25;
-        var gameSpeed = 5;
+        var jumpStrength = 15;
+        var gameSpeed = 2.5;
         var gameLoop;
         var pipeInterval;
 
@@ -77,7 +75,7 @@
             var pipe = document.createElement("div");
             pipe.classList.add("pipe");
             pipe.style.left = gameContainer.offsetWidth + "px";
-            pipe.style.top = Math.random() * (gameContainer.offsetHeight - 200) + "px";
+            pipe.style.top = Math.random() * (gameContainer.offsetHeight - 400) + "px";
             gameContainer.appendChild(pipe);
             pipes.push(pipe);
         }
@@ -115,6 +113,7 @@
         function gameOver() {
             clearInterval(gameLoop);
             clearInterval(pipeInterval);
+            document.removeEventListener("keydown", handleKeyDown);
             alert("Jiah kalah, masa gitu aja gabisa. Your score is: " + score);
             restartGame();
         }
@@ -123,7 +122,7 @@
             bird.style.top = "200px";
             score = 0;
             scoreLabel.innerText = "Score: " + score;
-            pipes.forEach(function (pipe) {
+            pipes.forEach(function(pipe) {
                 pipe.remove();
             });
             pipes = [];
@@ -146,12 +145,13 @@
             pipeInterval = setInterval(createPipe, 3000);
         }
 
-        document.addEventListener("keydown", function (event) {
+        function handleKeyDown(event) {
             if (event.code === "Space") {
                 jump();
             }
-        });
+        }
 
+        document.addEventListener("keydown", handleKeyDown);
         startGame();
     </script>
 </body>
