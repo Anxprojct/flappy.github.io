@@ -109,7 +109,10 @@
             var birdRect = bird.getBoundingClientRect();
             var gameContainerRect = gameContainer.getBoundingClientRect();
 
-            if (birdRect.bottom >= gameContainerRect.bottom) {
+            if (
+                birdRect.bottom >= gameContainerRect.bottom ||
+                birdRect.top <= gameContainerRect.top
+            ) {
                 gameOver();
             }
 
