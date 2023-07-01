@@ -3,6 +3,7 @@
 <head>
     <title>Flappy Bird</title>
     <style>
+        /* CSS styling */
         #game-container {
             position: relative;
             width: 400px;
@@ -44,6 +45,7 @@
     <div id="score">Score: 0</div>
 
     <script>
+        // JavaScript code
         var bird = document.getElementById("bird");
         var gameContainer = document.getElementById("game-container");
         var scoreLabel = document.getElementById("score");
@@ -68,7 +70,12 @@
                 var pipeRect = pipe.getBoundingClientRect();
                 var birdRect = bird.getBoundingClientRect();
 
-                if (birdRect.right > pipeRect.left && birdRect.left < pipeRect.right && birdRect.bottom > pipeRect.top && birdRect.top < pipeRect.bottom) {
+                if (
+                    birdRect.right > pipeRect.left &&
+                    birdRect.left < pipeRect.right &&
+                    birdRect.bottom > pipeRect.top &&
+                    birdRect.top < pipeRect.bottom
+                ) {
                     gameOver();
                 }
 
