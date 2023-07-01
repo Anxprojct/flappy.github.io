@@ -24,9 +24,18 @@
         .pipe {
             position: absolute;
             width: 80px;
-            height: 400px;
             background-color: green;
             transition: left 2s linear;
+        }
+
+        .top-pipe {
+            height: 200px;
+            top: 0;
+        }
+
+        .bottom-pipe {
+            height: 200px;
+            bottom: 0;
         }
 
         #score {
@@ -54,12 +63,24 @@
         var gameSpeed = 5;
 
         function createPipe() {
+            var pipeHeight = Math.random() * (gameContainer.offsetHeight - 200);
+            var topPipe = createIndividualPipe(pipeHeight, "top-pipe");
+            var bottomPipe = createIndividualPipe(gameContainer.offsetHeight - pipeHeight - 200, "bottom-pipe");
+
+            gameContainer.appendChild(topPipe);
+            gameContainer.appendChild(bottomPipe);
+
+            pipes.push(topPipe);
+            pipes.push(bottomPipe);
+        }
+
+        function createIndividualPipe(height, pipeClass) {
             var pipe = document.createElement("div");
             pipe.classList.add("pipe");
+            pipe.classList.add(pipeClass);
             pipe.style.left = gameContainer.offsetWidth + "px";
-            pipe.style.top = Math.random() * (gameContainer.offsetHeight - 200) + "px";
-            gameContainer.appendChild(pipe);
-            pipes.push(pipe);
+            pipe.style.height = height + "px";
+            return pipe;
         }
 
         function updatePipes() {
@@ -112,12 +133,12 @@
             updatePipes();
         }, 20);
 
-        setInterval(createPipe, 2000);
-
         var scoreIncreaseLoop = setInterval(function() {
             score++;
             scoreLabel.innerText = "Score: " + score;
         }, 1000);
+
+        setInterval(createPipe, 2000);
     </script>
 </body>
 </html>
