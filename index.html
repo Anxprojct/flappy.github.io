@@ -1,125 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Flappy Bird</title>
+    <title>Dynamic Background Color</title>
     <style>
-        /* CSS Styles */
+        body {
+            background-color: #000;
+            color: #fff;
+            font-size: 24px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <div id="game-container">
-        <div id="bird"></div>
+    <div id="content">
+        <h1>Dynamic Background Color</h1>
+        <p id="keypress-info">Press any key to change background color.</p>
     </div>
-    <div id="score">Score: 0</div>
 
     <script>
-        var bird = document.getElementById("bird");
-        var gameContainer = document.getElementById("game-container");
-        var scoreLabel = document.getElementById("score");
-        var pipes = [];
-        var score = 0;
-        var gravity = 1.5;
-        var jumpStrength = 15;
-        var gameSpeed = 2.5;
-        var gameLoop;
-        var pipeInterval;
-        var isJumping = false;
-        var birdColors = ["red", "blue", "green", "yellow"];
+        var content = document.getElementById("content");
+        var keypressInfo = document.getElementById("keypress-info");
 
-        function createPipe() {
-            var pipe = document.createElement("div");
-            pipe.classList.add("pipe");
-            pipe.style.left = gameContainer.offsetWidth + "px";
-            pipe.style.top = Math.random() * (gameContainer.offsetHeight - 200) + "px";
-            gameContainer.appendChild(pipe);
-            pipes.push(pipe);
-        }
+        document.addEventListener("keydown", function(event) {
+            var key = event.key;
+            var keyCode = event.keyCode;
 
-        function updatePipes() {
-            for (var i = 0; i < pipes.length; i++) {
-                var pipe = pipes[i];
-                var pipeRect = pipe.getBoundingClientRect();
-                var birdRect = bird.getBoundingClientRect();
+            // Change background color
+            var randomColor = getRandomColor();
+            document.body.style.backgroundColor = randomColor;
 
-                if (birdRect.right > pipeRect.left && birdRect.left < pipeRect.right && birdRect.bottom > pipeRect.top && birdRect.top < pipeRect.bottom) {
-                    gameOver();
-                }
+            // Change text color
+            var invertedColor = invertColor(randomColor);
+            document.body.style.color = invertedColor;
 
-                if (pipeRect.right < 0) {
-                    pipe.remove();
-                    pipes.splice(i, 1);
-                    score++;
-                    scoreLabel.innerText = "Score: " + score;
-                }
+            // Update keypress info
+            keypressInfo.innerHTML = "Key Pressed: " + key;
+            keypressInfo.style.color = invertedColor;
+        });
 
-                pipe.style.left = pipeRect.left - gameSpeed + "px";
+        function getRandomColor() {
+            var letters = "0123456789ABCDEF";
+            var color = "#";
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
             }
+            return color;
         }
 
-        function jump() {
-            if (!isJumping) {
-                isJumping = true;
-                var jumpInterval = setInterval(function () {
-                    var birdRect = bird.getBoundingClientRect();
-                    if (birdRect.top <= 0 || isJumping === false) {
-                        clearInterval(jumpInterval);
-                        isJumping = false;
-                    } else {
-                        bird.style.top = bird.offsetTop - jumpStrength + "px";
-                    }
-                }, 20);
-            }
+        function invertColor(hexColor) {
+            var hex = hexColor.replace("#", "");
+            var r = (255 - parseInt(hex.substr(0, 2), 16)).toString(16);
+            var g = (255 - parseInt(hex.substr(2, 2), 16)).toString(16);
+            var b = (255 - parseInt(hex.substr(4, 2), 16)).toString(16);
+            return "#" + padZero(r) + padZero(g) + padZero(b);
         }
 
-        function gameOver() {
-            clearInterval(gameLoop);
-            clearInterval(pipeInterval);
-            alert("Jiah, kalah! Masa gitu aja gabisa?");
-            restartGame();
+        function padZero(str) {
+            return str.length === 1 ? "0" + str : str;
         }
-
-        function restartGame() {
-            bird.style.top = "200px";
-            score = 0;
-            scoreLabel.innerText = "Score: " + score;
-            pipes.forEach(function (pipe) {
-                pipe.remove();
-            });
-            pipes = [];
-            startGame();
-        }
-
-        function startGame() {
-            bird.style.top = "200px";
-            gameLoop = setInterval(function () {
-                var birdRect = bird.getBoundingClientRect();
-                var gameContainerRect = gameContainer.getBoundingClientRect();
-
-                if (birdRect.bottom >= gameContainerRect.bottom) {
-                    gameOver();
-                }
-
-                bird.style.top = bird.offsetTop + gravity + "px";
-                updatePipes();
-            }, 20);
-
-            pipeInterval = setInterval(createPipe, 3000);
-        }
-
-        function handleKeyDown(event) {
-            if (event.code === "Space") {
-                jump();
-            }
-        }
-
-        function changeBirdColor() {
-            var randomColor = birdColors[Math.floor(Math.random() * birdColors.length)];
-            bird.style.backgroundColor = randomColor;
-        }
-
-        document.addEventListener("keydown", handleKeyDown);
-        setInterval(changeBirdColor, 1000);
-        startGame();
     </script>
 </body>
 </html>
